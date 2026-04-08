@@ -5,7 +5,7 @@ import requests
 # 📂 Load CSV
 df = pd.read_csv("Burger_Point.csv")
 
-st.title("🍔 Local AI Dashboard")
+st.title("🍔 Local Dashboard")
 
 # Show data
 st.write("### 📊 Data Preview")
