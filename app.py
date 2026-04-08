@@ -5,7 +5,7 @@ import requests
 # 📂 Load CSV
 df = pd.read_csv("Burger_Point.csv")
 
-st.title("🍔 Local AI Sales Dashboard")
+st.title("🍔 Local AI Dashboard")
 
 # Show data
 st.write("### 📊 Data Preview")
@@ -19,8 +19,12 @@ def ask_local_llm(prompt):
             "model": "llama3",
             "prompt": prompt,
             "stream": False
+        },
+         headers={
+            "ngrok-skip-browser-warning": "true"
         }
     )
+    print(response.text)
     return response.json()["response"]
 
 # ---------------- USER INPUT ---------------- #
