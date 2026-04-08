@@ -13,19 +13,24 @@ st.dataframe(df)
 
 # ---------------- AI FUNCTION ---------------- #
 def ask_local_llm(prompt):
-    response = requests.post(
-        "https://monique-courtlier-nonbarbarously.ngrok-free.dev/api/generate",
-        json={
-            "model": "llama3",
-            "prompt": prompt,
-            "stream": False
-        },
-         headers={
-            "ngrok-skip-browser-warning": "true"
-        }
-    )
-    print(response.text)
-    return response.json()["response"]
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={
+                "model": "llama3",
+                "prompt": prompt,
+                "stream": False
+            },
+            timeout=60
+        )
+
+        # Debug (optional)
+        st.write("🔍 Raw Response:", response.text)
+
+        return response.json().get("response", "No response from model")
+
+    except Exception as e:
+        return f"❌ Error: {e}"
 
 # ---------------- USER INPUT ---------------- #
 st.write("## 🤖 Ask Questions")
@@ -38,7 +43,7 @@ if user_question:
     You are a data analyst.
 
     Dataset:
-    {df.to_string()}
+    {df.head(100).to_string()}
 
     Question:
     {user_question}
@@ -46,7 +51,8 @@ if user_question:
     Give a clear answer.
     """
 
-    answer = ask_local_llm(prompt)
+    with st.spinner("Thinking... 🤔"):
+        answer = ask_local_llm(prompt)
 
     st.write("### 🧠 Answer")
     st.write(answer)
